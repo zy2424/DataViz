@@ -73,7 +73,7 @@ map.on('load', function() {
            },
            'filter': ['in', 'Amplitude', '']
        });
-        map.on('click', 'hex', function (e) {
+        map.on('mouseover', 'hex', function (e) {
             // Change the cursor style as a UI indicator.
             map.getCanvas().style.cursor = 'pointer';
 
