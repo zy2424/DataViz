@@ -4,12 +4,16 @@
   <meta charset='utf-8' />
   <title>Display a map</title>
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-<script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
-<link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css' rel='stylesheet' />
+  <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+  <!-- Import Mapbox GL Draw -->
   <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.2/mapbox-gl-directions.js'></script>
   <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.2/mapbox-gl-geocoder.min.js'></script>
   <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.0.2/mapbox-gl-directions.css' type='text/css' />
   <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.4.2/mapbox-gl-geocoder.css' type='text/css' />
+  <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.js'></script>
+  <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.0.9/mapbox-gl-draw.css' type='text/css' />
   <style>
     body { margin:0; padding:0; }
     #map { position:absolute; top:0; bottom:0; width:100%; }
@@ -41,9 +45,11 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiMzMyMzE2MDUxIiwiYSI6ImNraHU1cm93dDExcjQycW14N
 var map = new mapboxgl.Map({
   container: 'map',//thi sis the div that you have mad above in html that you are now placing your map in
   style: 'mapbox://styles/332316051/ckhu69w1h0gfi19qocj828x65',//you will find the accessToken under "Share" in your specific map in mapbox studio
-  center: [-74, 40.8],//the center of the map can be set to any initial value of [lng,lat]
+  center: [-73.968285, 40.785091],//the center of the map can be set to any initial value of [lng,lat]
   zoom: 10//note that some layers have zoom limits - for example, streets and building footprints are not visible when zoomed out
 });
+
+map.doubleClickZoom.disable();
 
 var overlay = document.getElementById('map-overlay');
 
@@ -65,15 +71,17 @@ map.on('load', function() {
            });
           map.addLayer({
            'id': 'hex_highlighted',
-           'type': 'fill',
+           'type': 'line',
            'source': 'Amp',
            'paint': {
-             'fill-color': '#ffff00',
-             'fill-opacity': 0.5
+             'line-color': '#ffffff',
+             'line-opacity': 0.5,
+             'line-width': 2
            },
            'filter': ['in', 'Amplitude', '']
-       });
-        map.on('mouseover', 'hex', function (e) {
+       	   });
+
+        map.on('mousemove', 'hex', function (e) {
             // Change the cursor style as a UI indicator.
             map.getCanvas().style.cursor = 'pointer';
 
@@ -101,8 +109,6 @@ map.on('load', function() {
         });
 });
 
-
-
 //4.search
 //also pay attention to the code we added to the header of this file for the geocoder
 //https://docs.mapbox.com/mapbox-gl-js/example/mapbox-gl-geocoder/
@@ -113,19 +119,7 @@ map.on('load', function() {
 map.addControl(new MapboxDirections({
 accessToken: mapboxgl.accessToken
 }), 'top-left');
-
-mapboxNavigation.requestRoutes(
-    RouteOptions.builder()
-        .applyDefaultParams()
-        .accessToken(mapboxgl.accessToken)
-        .coordinates(listOf(originPoint, destinationPoint))
-        .geometries(RouteUrl.GEOMETRY_POLYLINE6)
-        .profile(RouteUrl.PROFILE_DRIVING)
-        .build(),
-
-        routesReqCallback
-)
-
+    
 </script>
 
 </body>
